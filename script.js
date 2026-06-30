@@ -117,7 +117,10 @@ function findPivots(highs, lows, lr=2){
 }
 
 function structureEngine(candles, dir){
-  const highs=candles.map(c=>c.high), lows=candles.map(c=>c.low), closes=candles.map(c=>c.close);
+  const recentWindow = 80; // hanya baca struktur dari ~80 candle M15 terakhir
+  const sliceStart = Math.max(0, candles.length-recentWindow);
+  const recent = candles.slice(sliceStart);
+  const highs=recent.map(c=>c.high), lows=recent.map(c=>c.low), closes=recent.map(c=>c.close);
   const piv = findPivots(highs, lows, 2);
   const hPiv = piv.filter(p=>p.type==='H'), lPiv = piv.filter(p=>p.type==='L');
   const out = { ok:false, label:'Data pivot belum cukup', hh:false, hl:false, lh:false, ll:false, bos:false, choch:false, swingHigh:null, swingLow:null };
@@ -127,7 +130,9 @@ function structureEngine(candles, dir){
   const L1=lPiv[lPiv.length-1], L2=lPiv[lPiv.length-2];
   out.hh = H1.price > H2.price; out.lh = !out.hh;
   out.hl = L1.price > L2.price; out.ll = !out.hl;
-  out.swingHigh = H1; out.swingLow = L1;
+  // konversi index lokal (relatif ke window) kembali ke index absolut candle penuh
+  out.swingHigh = { idx: H1.idx+sliceStart, price: H1.price };
+  out.swingLow  = { idx: L1.idx+sliceStart, price: L1.price };
 
   const lastClose = closes[closes.length-1];
   if(dir==='BUY'){
@@ -249,11 +254,11 @@ function candleEngine(candles, dir, nearZone){
   const bullPin = lower(i) > body(i)*2 && upper(i) < body(i);
   const bearPin = upper(i) > body(i)*2 && lower(i) < body(i);
 
-  if(dir==='BUY' && bullEngulf){ pattern='Bullish Engulfing'; rawScore=8; }
-  else if(dir==='SELL' && bearEngulf){ pattern='Bearish Engulfing'; rawScore=8; }
-  else if(dir==='BUY' && bullPin){ pattern='Bullish Pin Bar'; rawScore=6; }
-  else if(dir==='SELL' && bearPin){ pattern='Bearish Pin Bar'; rawScore=6; }
-  else { pattern = dir==='BUY' ? (cl[i]>o[i]?'Bullish Candle (biasa)':'Tidak mendukung') : (cl[i]<o[i]?'Bearish Candle (biasa)':'Tidak mendukung'); rawScore = (dir==='BUY'?cl[i]>o[i]:cl[i]<o[i]) ? 3 : 0; }
+  if(dir==='BUY' && bullEngulf){ pattern='Bullish Engulfing'; rawScore=10; }
+  else if(dir==='SELL' && bearEngulf){ pattern='Bearish Engulfing'; rawScore=10; }
+  else if(dir==='BUY' && bullPin){ pattern='Bullish Pin Bar'; rawScore=7; }
+  else if(dir==='SELL' && bearPin){ pattern='Bearish Pin Bar'; rawScore=7; }
+  else { pattern = dir==='BUY' ? (cl[i]>o[i]?'Bullish Candle (biasa)':'Tidak mendukung') : (cl[i]<o[i]?'Bearish Candle (biasa)':'Tidak mendukung'); rawScore = (dir==='BUY'?cl[i]>o[i]:cl[i]<o[i]) ? 4 : 0; }
 
   const score = nearZone ? rawScore : Math.round(rawScore*0.5);
   return { pattern, score, contextBoost: nearZone };
@@ -391,7 +396,7 @@ function runProAnalysis(tf){
   else if(total>=85) result.decision = 'WATCHLIST';
   else result.decision = 'NO TRADE';
 
-  result.valid = total>=85;
+  result.valid = total>=90;
   return result;
 }
 
@@ -448,7 +453,9 @@ function render(symbol, tf, result){
   $('hTf').textContent = 'H4 / H1 / M15';
   $('hTime').textContent = tf.m15[tf.m15.length-1].time;
 
-  const dirClass = result.valid ? (result.direction==='BUY'?'buy':'sell') : (result.decision==='WATCHLIST'?'amber':'none');
+  const dirClass = result.decision.includes('BUY') ? 'buy'
+                  : result.decision.includes('SELL') ? 'sell'
+                  : result.decision==='WATCHLIST' ? 'amber' : 'none';
   $('headline').className = 'headline ' + dirClass;
   $('hDir').className = 'direction ' + dirClass;
   $('hDir').textContent = result.decision;
