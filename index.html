@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZEP SABBATH - Trading Analysis</title>
+<title>ZEP SABBATH — AI Analyze XAUUSD Pro v1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -15,7 +15,7 @@
       <div class="mark">Z</div>
       <div>
         <h1>ZEP SABBATH</h1>
-        <p>AI Trading Analysis · Twelvedata</p>
+        <p>AI Analyze XAUUSD Pro v1 · Multi-Timeframe</p>
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:18px;">
@@ -25,8 +25,8 @@
   </header>
 
   <div class="panel">
-    <div class="panel-title">Konfigurasi Analisis</div>
-    <div class="grid">
+    <div class="panel-title">Konfigurasi Analisis · H4 (Trend) → H1 (Setup) → M15 (Timing Entry)</div>
+    <div class="grid" style="grid-template-columns:1.4fr 1fr auto;">
       <div class="field">
         <label>Twelvedata API Key</label>
         <input type="password" id="apiKey" placeholder="masukkan API key kamu" value="c2a9e1bf8cc34b799d9808465113a66b">
@@ -34,17 +34,6 @@
       <div class="field">
         <label>Symbol</label>
         <input type="text" id="symbol" placeholder="XAU/USD" value="XAU/USD">
-      </div>
-      <div class="field">
-        <label>Timeframe</label>
-        <select id="interval">
-          <option value="5min">5 Menit</option>
-          <option value="15min" selected>15 Menit</option>
-          <option value="30min">30 Menit</option>
-          <option value="1h">1 Jam</option>
-          <option value="4h">4 Jam</option>
-          <option value="1day">1 Hari</option>
-        </select>
       </div>
       <button class="run" id="runBtn">▶ Analisis</button>
     </div>
@@ -65,7 +54,7 @@
         </div>
         <div class="conf-box">
           <div class="conf-num" id="confNum">—</div>
-          <div class="conf-label">Confidence Score</div>
+          <div class="conf-label">AI Score</div>
           <div class="conf-bar"><div class="conf-fill" id="confFill"></div></div>
         </div>
       </div>
@@ -73,7 +62,7 @@
 
     <div class="cards">
       <div class="card">
-        <div class="k">Trend (EMA50 / EMA200)</div>
+        <div class="k">Trend Engine (H4 / H1 / M15)</div>
         <div class="v" id="cTrend">—</div>
         <div class="sub" id="cTrendSub">—</div>
       </div>
@@ -83,7 +72,7 @@
         <div class="sub" id="cStructSub">—</div>
       </div>
       <div class="card">
-        <div class="k">Momentum (RSI / ATR)</div>
+        <div class="k">Momentum / Volatility</div>
         <div class="v" id="cMom">—</div>
         <div class="sub" id="cMomSub">—</div>
       </div>
@@ -97,7 +86,7 @@
     </div>
 
     <div class="chart-box">
-      <div class="panel-title">Chart &amp; Level Visual</div>
+      <div class="panel-title">Chart M15 &amp; Level Visual</div>
       <div id="chartHolder"></div>
       <div class="legend">
         <span><i class="sw" style="background:#f0b429"></i> Close</span>
@@ -109,7 +98,7 @@
     </div>
 
     <div class="checklist">
-      <div class="panel-title">Checklist Entry</div>
+      <div class="panel-title">AI Scoring Breakdown (100 poin)</div>
       <div id="checklistItems"></div>
     </div>
 
@@ -122,7 +111,7 @@
 
   <footer>
     <strong style="display:block; letter-spacing:1.5px; color:var(--text-dim); margin-bottom:8px;">DISCLAIMER</strong>
-   Kami tidak memberikan saran finansial. Semua output adalah hasil perhitungan teknikal otomatis dan bukan jaminan profit. Selalu gunakan manajemen risiko.
+   Kami tidak memberikan saran finansial. Semua output adalah hasil perhitungan teknikal otomatis dan bukan jaminan profit. Selalu gunakan manajemen risiko
   </footer>
 </div>
 
